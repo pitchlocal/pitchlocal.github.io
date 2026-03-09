@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PitchLocal</title>
+<link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark:  #1b3424;
+    --green-mid:   #243d2e;
+    --green-light: #2e5040;
+    --lime:        #b8e030;
+    --white:       #f2f5f0;
+    --white-dim:   rgba(242,245,240,0.5);
+    --white-faint: rgba(242,245,240,0.09);
+    --border:      rgba(242,245,240,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--green-dark);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.4rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(27,52,36,0.96);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Fugaz One', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.06em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .logo span { color: var(--lime); }
+
+  .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+
+  .nav-links a {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 6rem;
+    background: var(--green-dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pitch-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--white-faint);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .ring-1 { width: 700px; height: 700px; }
+  .ring-2 { width: 420px; height: 420px; opacity: 0.6; }
+  .ring-3 { width: 180px; height: 180px; opacity: 0.4; }
+
+  .pitch-spot {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--white-faint);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid var(--border);
+    color: var(--white-dim);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.45rem 1rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tag-dot {
+    width: 5px; height: 5px;
+    background: var(--lime);
+    border-radius: 50%;
+    animation: blink 2.5s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity:1; } 50% { opacity:0.2; }
+  }
+
+  h1 {
+    font-family: 'Fugaz One', sans-serif;
+    font-size: clamp(3.2rem, 8vw, 7.5rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 .accent { color: var(--lime); display: block; }
+  h2 .accent { color: var(--lime); display: block; }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--white-dim);
+    line-height: 1.75;
+    max-width: 420px;
+    margin: 0 auto 3rem;
+    position: relative;
+    z-index: 1;
+    font-weight: 300;
+  }
+
+  .hero-sub strong { color: var(--white); font-weight: 400; }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn {
+    font-family: 'Fugaz One', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.9rem 2.2rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-solid { background: var(--white); color: var(--green-dark); }
+  .btn-solid:hover { transform: translateY(-3px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: rgba(242,245,240,0.35); transform: translateY(-3px); }
+  .btn-lime { background: var(--lime); color: var(--green-dark); }
+  .btn-lime:hover { transform: translateY(-3px); }
+
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* TOGGLE SECTION */
+  .toggle-section {
+    padding: 6rem 2rem 7rem;
+    background: var(--green-mid);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .toggle-bar {
+    display: flex;
+    gap: 2px;
+    background: rgba(242,245,240,0.07);
+    padding: 3px;
+    margin-bottom: 4rem;
+  }
+
+  .toggle-btn {
+    font-family: 'Fugaz One', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.75rem 2.4rem;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--white-dim);
+    transition: all 0.25s ease;
+  }
+
+  .toggle-btn.active {
+    background: var(--white);
+    color: var(--green-dark);
+  }
+
+  /* PANEL CONTENT */
+  .panel-content {
+    display: none;
+    max-width: 520px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadePanel 0.3s ease;
+    text-align: center;
+  }
+
+  .panel-content.active { display: block; }
+
+  @keyframes fadePanel {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-label {
+    font-family: 'Fugaz One', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .panel-label::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--lime);
+    flex-shrink: 0;
+  }
+
+  .panel-content h2 {
+    font-family: 'Fugaz One', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 3.5rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    margin-bottom: 1.2rem;
+  }
+
+  .panel-content > p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--white-dim);
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .benefit-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    text-align: left;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .benefit-list li {
+    font-size: 0.88rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    line-height: 1.5;
+    color: rgba(242,245,240,0.7);
+    font-weight: 300;
+  }
+
+  .check {
+    width: 16px; height: 16px;
+    border: 1px solid rgba(184,224,48,0.35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    color: var(--lime);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  /* FORM */
+  .panel-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .panel-form input {
+    padding: 0.9rem 1.1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    background: var(--white-faint);
+    border: 1px solid var(--border);
+    color: var(--white);
+  }
+
+  .panel-form input:focus { border-color: rgba(242,245,240,0.3); }
+  .panel-form input::placeholder { color: rgba(242,245,240,0.28); }
+
+  .btn-submit {
+    font-family: 'Fugaz One', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.95rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    background: var(--white);
+    color: var(--green-dark);
+    margin-top: 0.2rem;
+  }
+
+  .btn-submit:hover { transform: translateY(-3px); }
+
+  .form-note {
+    font-size: 0.72rem;
+    color: rgba(242,245,240,0.25);
+    letter-spacing: 0.03em;
+  }
+
+  .thanks-msg {
+    font-family: 'Fugaz One', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lime);
+    padding: 1rem 0;
+    display: none;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--green-dark);
+    border-top: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  footer p {
+    font-size: 0.75rem;
+    color: rgba(242,245,240,0.25);
+    letter-spacing: 0.05em;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    h1 { font-size: clamp(2.8rem, 14vw, 4rem); }
+    .toggle-btn { padding: 0.7rem 1.4rem; font-size: 0.75rem; }
+    footer { flex-direction: column; gap: 0.4rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">PITCH<span>LOCAL</span></div>
+
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="pitch-ring ring-1"></div>
+  <div class="pitch-ring ring-2"></div>
+  <div class="pitch-ring ring-3"></div>
+  <div class="pitch-spot"></div>
+
+  <div class="hero-tag">
+    <div class="hero-tag-dot"></div>
+    Launching Spring 2026 — Toronto & GTA
+  </div>
+
+  <h1>
+    Sponsorship for<br>
+    <span class="accent">GTA Youth Soccer.</span>
+  </h1>
+
+  <p class="hero-sub">
+    PitchLocal brings <strong>professional sponsorship</strong> to GTA youth soccer — giving local businesses grassroots reach and giving teams the funding they deserve.
+  </p>
+
+  <div class="hero-ctas">
+    <button class="btn btn-solid" onclick="setToggle('sponsor')">I Am a Sponsor</button>
+    <button class="btn btn-lime" onclick="setToggle('team')">I Am a Team</button>
+  </div>
+</section>
+
+
+<!-- TOGGLE SECTION -->
+<div class="toggle-section" id="join">
+
+  <!-- TEAMS PANEL -->
+  <div class="panel-content" id="panel-team">
+    <p class="panel-label">For Teams</p>
+    <h2>Beyond the<br><span class="accent">Bake Sale.</span></h2>
+    <p>Stop depending on parent networks. PitchLocal connects your team with real local businesses — sponsors who are there for the marketing, not because their kid plays left back.</p>
+    <ul class="benefit-list">
+      <li><span class="check">✓</span> List your team in minutes — free to join</li>
+      <li><span class="check">✓</span> We match you with the right local sponsor</li>
+      <li><span class="check">✓</span> Cover kit costs, travel & registration fees</li>
+      <li><span class="check">✓</span> We handle contracts, payments & reporting</li>
+    </ul>
+    <form class="panel-form" action="https://us2.list-manage.com/subscribe/post?u=595006d00cdc3c7d7611a5175&amp;id=3297079f1e&amp;f_id=006dfae3f0" method="post">
+      <input type="text" name="FNAME" placeholder="Your name" required />
+      <input type="text" name="COMPANY" placeholder="Team or club name" required />
+      <input type="email" name="EMAIL" placeholder="Your email address" required />
+      <div style="position:absolute;left:-5000px" aria-hidden="true">
+        <input type="text" name="b_595006d00cdc3c7d7611a5175_3297079f1e" tabindex="-1" value="">
+      </div>
+      <button type="submit" class="btn-submit">Register My Team</button>
+    </form>
+    <div class="thanks-msg">Thank you — we'll be in touch.</div>
+  </div>
+
+  <!-- SPONSORS PANEL -->
+  <div class="panel-content active" id="panel-sponsor">
+    <p class="panel-label">For Sponsors</p>
+    <h2>Reach GTA<br><span class="accent">Families Locally</span></h2>
+    <p>Put your brand in front of hundreds of engaged suburban families — repeatedly, all season long. Hyper-local reach at a fraction of billboard costs.</p>
+    <ul class="benefit-list">
+      <li><span class="check">✓</span> Jersey logo, banners & social media mentions</li>
+      <li><span class="check">✓</span> Filter by neighbourhood, sport & budget</li>
+      <li><span class="check">✓</span> 500+ family impressions per match</li>
+      <li><span class="check">✓</span> End-of-season reach report included</li>
+    </ul>
+    <form class="panel-form" action="https://us2.list-manage.com/subscribe/post?u=595006d00cdc3c7d7611a5175&amp;id=3297079f1e&amp;f_id=006dfae3f0" method="post">
+      <input type="text" name="FNAME" placeholder="Your name" required />
+      <input type="text" name="COMPANY" placeholder="Business name" required />
+      <input type="email" name="EMAIL" placeholder="Your email address" required />
+      <div style="position:absolute;left:-5000px" aria-hidden="true">
+        <input type="text" name="b_595006d00cdc3c7d7611a5175_3297079f1e" tabindex="-1" value="">
+      </div>
+      <button type="submit" class="btn-submit">Get Early Access</button>
+    </form>
+    <div class="thanks-msg">Thank you — we'll be in touch.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">PITCH<span>LOCAL</span></div>
+  <p>Toronto, Canada</p>
+  <p>© 2026 PitchLocal</p>
+</footer>
+
+<script>
+  function setToggle(type) {
+    document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active'));
+    document.getElementById(`panel-${type}`).classList.add('active');
+    setTimeout(() => {
+      const form = document.querySelector(`#panel-${type} .panel-form`);
+      if (form) form.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 50);
+  }
+
+  function submitForm(type) {
+    const name  = document.getElementById(`${type}-name`).value.trim();
+    const email = document.getElementById(`${type}-email`).value.trim();
+    let valid = true;
+
+    if (!name)  { document.getElementById(`${type}-name`).style.borderColor  = 'rgba(255,100,100,0.5)'; valid = false; }
+    if (!email || !email.includes('@')) { document.getElementById(`${type}-email`).style.borderColor = 'rgba(255,100,100,0.5)'; valid = false; }
+    if (!valid) return;
+
+    document.getElementById(`${type}-form`).style.display    = 'none';
+    document.getElementById(`${type}-success`).style.display = 'block';
+    console.log('Signup:', { type, name, email });
+  }
+
+  document.querySelectorAll('.panel-form input').forEach(input => {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const panel = input.closest('.panel-content').id;
+        submitForm(panel === 'panel-team' ? 'team' : 'sponsor');
+      }
+    });
+    input.addEventListener('input', () => input.style.borderColor = '');
+  });
+  // Show thanks message after form submit
+  document.querySelectorAll('.panel-form').forEach(form => {
+    form.addEventListener('submit', function() {
+      const thanks = this.nextElementSibling;
+      setTimeout(() => {
+        this.style.display = 'none';
+        if (thanks) thanks.style.display = 'block';
+      }, 300);
+    });
+  });
+</script>
+</body>
+</html>
